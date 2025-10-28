@@ -266,12 +266,12 @@ body.loaded #preloader{ opacity: 0; visibility: hidden; transition: opacity .8s 
 /* About */
 .contact-container{ width: 90%; margin: 50px auto; }
 .about-container{
-  display: flex; align-items: center; gap: 30px; flex-wrap: wrap;
+  display: flex; align-items: center; gap: 30px; flex-wrap: wrap; margin-left: 90px;
 }
 .about-image img{ width: 300px; border-radius: 10px; object-fit: cover; }
 .about-content{ flex: 1; }
 .about-content h2{ color: rgb(3,31,114); font-size: 32px; margin-bottom: 15px; }
-.about-content p{ font-size: 18px; line-height: 1.6; margin-bottom: 10px; }
+.about-content p{ font-size: 18px; line-height: 1.6; margin-bottom: 10px; margin-left: 50px; }
 .about-content button{
   padding: 10px 20px; background: rgb(3,31,114); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 16px;
 }
@@ -342,3 +342,185 @@ footer{ background: rgb(3,31,114); color: #fff; text-align: center; padding: 20p
 .banner button:focus-visible, .navbar a:focus-visible, .menu-toggle:focus-visible{
   outline: 2px solid #0ea5e9; outline-offset: 2px;
 }
+:root{ --nav-h: 65px; }
+
+/* navbar z-order safe */
+.navbar{ position: sticky; top: 0; z-index: 1200; }
+.menu-toggle{ display:none; background:none; border:0; font-size:25px; color:rgb(3,31,114); cursor:pointer; z-index:1301; }
+
+/* drawer */
+@media (max-width:900px){
+  .menu-toggle{ display:block; }
+  .login-icon{ z-index: 1202; }
+
+  .menu{
+    position: fixed;
+    top: var(--nav-h);
+    right: -100%;
+    width: 78%; max-width: 320px;
+    height: calc(100dvh - var(--nav-h));
+    background: #fff;
+    box-shadow: -12px 0 24px rgba(0,0,0,.12);
+    display: flex; flex-direction: column; align-items: start; gap: 18px;
+    padding: 22px;
+    transition: right .25s ease;
+    z-index: 1300;
+  }
+  .menu.active{ right: 0; }
+
+  /* mobile dropdown style */
+  .dropdown-menu{ position: static; display:none; background: transparent; box-shadow:none; padding-left:15px; }
+  .dropdown.open .dropdown-menu{ display:block; }
+
+  /* hide desktop-only icon if you want */
+  .login-icon{ position: relative; }
+  .only-mobile{ display:block; }
+}
+@media (min-width:901px){
+  .only-mobile{ display:none; }
+}
+
+/* backdrop over content, under menu */
+.backdrop{
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.35);
+  opacity: 0; visibility: hidden;
+  transition: opacity .2s ease, visibility .2s ease;
+  z-index: 1290;
+}
+.backdrop.show{ opacity:1; visibility:visible; }
+
+/* prevent lower sections covering the drawer */
+.banner, .cat-strip, .scroll-container{ position: relative; z-index: 1; }
+
+body.menu-open{ overflow:hidden; }
+/* === Mobile tiny popup menu (compact like screenshot) === */
+@media (max-width: 900px){
+  :root{
+    --nav-h: 64px;
+    --popup-w: 200px;      /* overall width */
+    --popup-font: 15.5px;  /* item text size */
+    --popup-pad: 6px;      /* panel inner padding */
+    --item-pad-y: 8px;     /* item vertical padding */
+    --item-pad-x: 12px;    /* item horizontal padding */
+    --popup-radius: 14px;  /* rounded corners */
+  }
+
+  .menu{
+    position: absolute;
+    top: calc(var(--nav-h) - 4px);
+    right: 12px;
+    width: var(--popup-w);
+    max-height: 60vh;
+    overflow: auto;
+    background: #fff;
+    border: 1px solid #e6eaf0;
+    border-radius: var(--popup-radius);
+    box-shadow: 0 12px 28px rgba(3, 18, 51, .18);
+    padding: var(--popup-pad);
+    display: flex; flex-direction: column; gap: 4px;
+    opacity: 0; transform: translateY(-6px);
+    transition: opacity .18s ease, transform .18s ease;
+    z-index: 1300;
+  }
+  .menu.active{ opacity:1; transform: translateY(0); }
+
+  .menu li{ width: 100%; }
+  .menu a{
+    display:block;
+    padding: var(--item-pad-y) var(--item-pad-x);
+    font-size: var(--popup-font);
+    color:#0f172a;         /* dark text */
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+  .menu a:hover{ background:#f3f4f6; }
+
+  /* optional: little arrow pointer */
+  .menu::before{
+    content:"";
+    position:absolute;
+    top:-8px; right:22px;
+    width:12px; height:12px;
+    background:#fff;
+    border-left:1px solid #e6eaf0;
+    border-top:1px solid #e6eaf0;
+    transform: rotate(45deg);
+  }
+
+  /* nested dropdown inside popup (compact) */
+  .dropdown > a::after{ content:"▾"; float:right; font-size:12px; opacity:.75; }
+  .dropdown-menu{
+    display:none; position:static; margin:4px 0 0; padding:6px;
+    background:#f8fafc; border:1px solid #eef2f7; border-radius:10px;
+  }
+  .dropdown.open .dropdown-menu{ display:block; }
+  .dropdown-menu li a{ padding: 7px 10px; font-size: 15px; }
+
+  /* remove backdrop/lock for tiny popup */
+  .backdrop{ display:none !important; }
+  body.menu-open{ overflow:auto; }
+}
+/* ---- About: perfect alignment & layout ---- */
+.about-wrap{
+  display: grid;
+  grid-template-columns: 320px 1fr;   /* image | text */
+  gap: 28px;
+  align-items: start;
+}
+
+.about-text{
+  max-width: 80ch;                   /* ideal line length */
+  color: #0b1548;
+}
+/* paragraphs: clean justify + rhythm */
+.about-text p{
+  margin: 0 0 14px;
+  font-size: 18px;
+  line-height: 1.75;
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+
+/* optional first para indent */
+.about-text p:first-of-type{ text-indent: 1.25em; }
+
+/* brand highlight (replaces <mark>) */
+.brand-pill{
+  background: #ffea6a;
+  padding: .08em .35em;
+  border-radius: .35em;
+  font-weight: 800;
+}
+
+/* image sizing tidy */
+.about-image img{
+  width: 700px;
+  height: 300px;
+  border-radius: 10px;
+  object-fit: cover;
+  display: block;
+}
+
+/* CTA button */
+.about-text .btn{
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 16px;
+  background: rgb(3,31,114);
+  color: #fff;
+  border: 0; border-radius: 8px;
+  cursor: pointer;
+}
+.about-text .btn:hover{ background: orangered; }
+
+/* responsive stack */
+@media (max-width: 900px){
+  .about-wrap{ grid-template-columns: 1fr; gap: 16px; }
+  .about-text{ max-width: 100%; padding-inline: 12px; }
+  .about-text p{ line-height: 1.8; }
+  .about-text p:first-of-type{ text-indent: 0; } /* remove indent on mobile */
+}
+

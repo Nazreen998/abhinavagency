@@ -6,6 +6,54 @@ document.addEventListener("DOMContentLoaded", () => {
     menuToggle.addEventListener("click", () => menu.classList.toggle("active"));
   }
 });
+document.addEventListener("DOMContentLoaded", () => {
+  const toggle = document.getElementById("menu-toggle");
+  const menu   = document.getElementById("menu");
+  const bd     = document.getElementById("backdrop");
+
+  if (!toggle || !menu || !bd) return;
+
+  const openMenu = () => {
+    menu.classList.add("active");
+    toggle.setAttribute("aria-expanded", "true");
+    document.body.classList.add("menu-open");
+    menu.removeAttribute("hidden");
+    bd.classList.add("show");
+  };
+
+  const closeMenu = () => {
+    menu.classList.remove("active");
+    toggle.setAttribute("aria-expanded", "false");
+    document.body.classList.remove("menu-open");
+    bd.classList.remove("show");
+    setTimeout(() => menu.setAttribute("hidden",""), 250);
+  };
+
+  toggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    menu.classList.contains("active") ? closeMenu() : openMenu();
+  });
+
+  // close on backdrop / ESC / link tap
+  bd.addEventListener("click", closeMenu);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && menu.classList.contains("active")) closeMenu();
+  });
+  menu.querySelectorAll("a").forEach(a => a.addEventListener("click", closeMenu));
+
+  // mobile: tap on PRODUCTS toggles its submenu
+  const dd = menu.querySelector(".dropdown > a");
+  const ddWrap = menu.querySelector(".dropdown");
+  if (dd && ddWrap){
+    dd.addEventListener("click", (evt) => {
+      if (window.matchMedia("(max-width: 900px)").matches){
+        evt.preventDefault();
+        ddWrap.classList.toggle("open");
+      }
+    });
+  }
+});
+
 
 // ---------- SMOOTH SCROLL WITH NAVBAR OFFSET ----------
 document.addEventListener("DOMContentLoaded", () => {
