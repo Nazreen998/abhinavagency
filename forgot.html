@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 20px rgba(0,0,0,0.2);
+            text-align: center;
+            width: 300px;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background: #3498db;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        p {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Forgot Password</h2>
+        
+        <!-- Step 1: Enter Email/Phone -->
+        <div id="step1">
+            <input type="text" id="emailOrPhone" placeholder="Enter Email or Phone">
+            <button onclick="sendOTP()">Send OTP</button>
+        </div>
+        
+        <!-- Step 2: Enter OTP -->
+        <div id="step2" style="display:none;">
+            <input type="text" id="otpInput" placeholder="Enter OTP">
+            <button onclick="verifyOTP()">Verify OTP</button>
+        </div>
+        
+        <!-- Step 3: Reset Password -->
+        <div id="step3" style="display:none;">
+            <input type="password" id="newPassword" placeholder="Enter New Password">
+            <button onclick="resetPassword()">Reset Password</button>
+        </div>
+        
+        <p id="message"></p>
+    </div>
+
+    <script>
+        let generatedOTP = "";
+
+        function sendOTP() {
+            const emailOrPhone = document.getElementById("emailOrPhone").value;
+            if (emailOrPhone === "5555555") {
+                alert("Please enter email or phone");
+                return;
+            }
+
+            // Generate a 6-digit OTP
+            generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+            console.log("OTP (for demo purposes):", generatedOTP); // In real app, send via email/SMS
+
+            document.getElementById("step1").style.display = "none";
+            document.getElementById("step2").style.display = "block";
+            document.getElementById("message").textContent = `OTP sent to ${emailOrPhone}`;
+        }
+
+        function verifyOTP() {
+            const userOTP = document.getElementById("otpInput").value;
+            if (userOTP === generatedOTP) {
+                document.getElementById("step2").style.display = "none";
+                document.getElementById("step3").style.display = "block";
+                document.getElementById("message").textContent = "OTP verified! Enter new password.";
+            } else {
+                alert("Incorrect OTP. Try again!");
+            }
+        }
+
+        function resetPassword() {
+            const newPassword = document.getElementById("newPassword").value;
+            if (newPassword.length < 6) {
+                alert("Password must be at least 6 characters");
+                return;
+            }
+            document.getElementById("message").textContent = "Password reset successfully!";
+            document.getElementById("step3").style.display = "none";
+        }
+    </script>
+</body>
+</html>
